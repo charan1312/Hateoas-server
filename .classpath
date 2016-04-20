@@ -28,5 +28,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/CSE564_HATEOAS_RestbucksOrderingClient"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -12,14 +12,14 @@ public class Representation1 {
     public static final String SELF_REL_VALUE = "self";
 
     @XmlElement(name = "link", namespace = DAP_NAMESPACE)
-    protected List<Link> links;
+    protected List<Link1> links;
 
-    protected Link getLinkByName(String uriName) {
+    protected Link1 getLinkByName(String uriName) {
         if (links == null) {
             return null;
         }
 
-        for (Link l : links) {
+        for (Link1 l : links) {
             if (l.getRelValue().toLowerCase().equals(uriName.toLowerCase())) {
                 return l;
             }

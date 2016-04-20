@@ -7,23 +7,22 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class Appeal {
     
-    private final int studentID;
-    //private int id;
-    @XmlTransient
+    private final int studentId;
+    private final int gradeId;
     private final List<String> comments;
-    @XmlTransient
     private String title;
-    @XmlTransient
-    private AppealStatus appealStatus = AppealStatus.SUBMITTED;
+    //@XmlTransient
+    private AppealStatus appealStatus = AppealStatus.CREATED;
 
-    public Appeal(int sid, String title) {
-      this(sid, title, AppealStatus.CREATED);
+    public Appeal(int sid, int gid, String title) {
+      this(sid, gid, title, AppealStatus.CREATED);
     }
     
 
-    public Appeal(int sid, String title, AppealStatus appealStatus) {
+    public Appeal(int sid, int gid, String title, AppealStatus appealStatus) {
         this.comments = new ArrayList<String>();
-        this.studentID = sid;
+        this.gradeId = gid;
+        this.studentId = sid;
         this.title = title;
         this.appealStatus = appealStatus;
     }
@@ -32,15 +31,20 @@ public class Appeal {
         return title;
     }
     
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String title) {       // IS TO CHANGE THE TITLE BEFORE THE APPEAL IS SUBMITTED AND IT IS NOT IN-PROCESS YET
+        if(this.appealStatus.equals(AppealStatus.SUBMITTED))
+            this.title = title;
     }
 
-    public int getStudentID() {
-        return studentID;
+    public int getStudentID() {          // FIXED STUDENT
+        return studentId;
+    }
+
+    public int getGradeId() {           // FIXED GRADE
+        return gradeId;
     }
     
-    public void setAppealStatus(AppealStatus status) {
+    public void setAppealStatus(AppealStatus status) { 
         this.appealStatus = status;
     }
 
@@ -48,29 +52,22 @@ public class Appeal {
         return appealStatus;
     }
 
-    public void addComment(String comment) {
+    public void addComment(String comment) {         // add additional comments
         this.comments.add(comment);
+    }
+    
+    public List<String> getComments() {         // add additional comments
+        return this.comments;
     }
     
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Title: " + title + "\n" );
-        sb.append("Student ID: " + studentID + "\n");
+        sb.append("Student ID: " + studentId + "\n");
+        sb.append("Grade ID: " + gradeId + "\n");
         sb.append("Status: " + appealStatus + " \n");
         sb.append("Comments: " + comments.toString());
         return sb.toString();
     }
-    
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("Location: " + location + "\n");
-//        sb.append("Status: " + status + "\n");
-//        for(Item i : items) {
-//            sb.append("Item: " + i.toString()+ "\n");
-//        }
-//        return sb.toString();
-//    }
-    
-    
 }

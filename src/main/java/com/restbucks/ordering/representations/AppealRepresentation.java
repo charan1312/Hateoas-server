@@ -10,33 +10,32 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.restbucks.ordering.activities.InvalidOrderException;
-import com.restbucks.ordering.activities.UriExchange;
-import com.restbucks.ordering.model.Appeal;
-import com.restbucks.ordering.model.AppealStatus;
-import com.restbucks.ordering.model.Item;
-import com.restbucks.ordering.model.Location;
-import com.restbucks.ordering.model.Order;
-import com.restbucks.ordering.model.OrderStatus;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.restbucks.ordering.activities.InvalidAppealException;
+import com.restbucks.ordering.activities.InvalidOrderException;
+import com.restbucks.ordering.model.Appeal;
+import com.restbucks.ordering.model.AppealStatus;
+import com.restbucks.ordering.model.Location;
+
 @XmlRootElement(name = "appeal", namespace = Representation1.APPEALS_NAMESPACE)
 public class AppealRepresentation extends Representation1 {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AppealRepresentation.class);
 
-    @XmlElement(name = "id", namespace = Representation1.APPEALS_NAMESPACE)
-    //private List<Appeal> appeals;
-    private int id;
-    
-    @XmlElement(name = "description", namespace = Representation1.APPEALS_NAMESPACE)
-    private Location description;
-    
-    @XmlElement(name = "byStudent", namespace = Representation1.APPEALS_NAMESPACE)
-    private String byStudent;
-    
+    @XmlElement(name = "studentId", namespace = Representation1.APPEALS_NAMESPACE)
+    private int studentId;
+
+    @XmlElement(name = "gradeId", namespace = Representation1.APPEALS_NAMESPACE)
+    private int gradeId;
+
+    @XmlElement(name = "comment", namespace = Representation1.APPEALS_NAMESPACE)
+    private List<String> comments;
+
+    @XmlElement(name = "title", namespace = Representation1.APPEALS_NAMESPACE)
+    private String title;
+
     @XmlElement(name = "status", namespace = Representation1.APPEALS_NAMESPACE)
     private AppealStatus appealStatus;
 
@@ -48,8 +47,8 @@ public class AppealRepresentation extends Representation1 {
     }
 
     public static AppealRepresentation fromXmlString(String xmlRepresentation) {
-        LOG.info("Creating an Order object from the XML = {}", xmlRepresentation);
-                
+        LOG.info("Creating an Appeal object from the XML = {}", xmlRepresentation);
+
         AppealRepresentation appealRepresentation = null;     
         try {
             JAXBContext context = JAXBContext.newInstance(AppealRepresentation.class);
@@ -58,27 +57,30 @@ public class AppealRepresentation extends Representation1 {
         } catch (Exception e) {
             throw new InvalidOrderException(e);
         }
-        
+
         LOG.debug("Generated the object {}", appealRepresentation);
         return appealRepresentation;
     }
 
-/*    
-    public static AppealRepresentation createResponseAppealRepresentation(Appeal appeal, AppealsUri appealsUri) {
-        LOG.info("Creating a Response Appeal for appeal = {} and Appeal URI", appeal.toString(), appealsUri.toString());
-        
+
+    public static AppealRepresentation createResponseAppealRepresentation(Appeal appeal, AppealsUri appealUri) {
+        LOG.info("Creating a Response Appeal for appeal = {} and Appeal URI", appeal.toString(), appealUri.toString());
+
         AppealRepresentation appealRepresentation;     
-        
-        AppealsUri appealUri = new AppealsUri(Uri.getBaseUri() + "/payment/" + orderUri.getId().toString());
-        LOG.debug("Payment URI = {}", paymentUri);
-        
-        if(order.getStatus() == OrderStatus.UNPAID) {
-            LOG.debug("The order status is {}", OrderStatus.UNPAID);
-            orderRepresentation = new AppealRepresentation(order, 
-                    new Link(RELATIONS_URI + "cancel", orderUri), 
-                    new Link(RELATIONS_URI + "payment", paymentUri), 
-                    new Link(RELATIONS_URI + "update", orderUri),
-                    new Link(Representation.SELF_REL_VALUE, orderUri));
+
+        //AppealsUri gradeUri = new AppealsUri(appealUri.getBaseUri() + "/grade/" + appealUri.getId().toString());
+        AppealsUri gradeUri = new AppealsUri(appealUri.getBaseUri() + "/grade/" + appeal.getGradeId());
+        LOG.debug("Grade URI = {}", gradeUri);
+
+        if(appeal.getStatus() == AppealStatus.CREATED) {
+            LOG.debug("The order status is {}", AppealStatus.CREATED);
+            appealRepresentation = new AppealRepresentation(appeal, 
+                    new Link1(RELATIONS_URI + "reject", appealUri), 
+                    new Link1(RELATIONS_URI + "grade", gradeUri), 
+                    new Link1(RELATIONS_URI + "process", appealUri),
+                    new Link1(RELATIONS_URI + "approve", appealUri),
+                    new Link1(RELATIONS_URI + "submit", appealUri),
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri));
         } else if(order.getStatus() == OrderStatus.PREPARING) {
             LOG.debug("The order status is {}", OrderStatus.PREPARING);
             orderRepresentation = new AppealRepresentation(order, new Link(Representation.SELF_REL_VALUE, orderUri));
@@ -92,26 +94,26 @@ public class AppealRepresentation extends Representation1 {
             LOG.debug("The order status is in an unknown status");
             throw new RuntimeException("Unknown Order Status");
         }
-        
+
         LOG.debug("The order representation created for the Create Response Order Representation is {}", orderRepresentation);
-        
-        return orderRepresentation;
+
+        return appealRepresentation;
     }
 
-    public AppealRepresentation(Order order, Link... links) {
-        LOG.info("Creating an Order Representation for order = {} and links = {}", order.toString(), links.toString());
-        
+    public AppealRepresentation(Appeal appeal, Link1... links) {
+        LOG.info("Creating an Appeal Representation for order = {} and links = {}", appeal.toString(), links.toString());
+
         try {
-            this.location = order.getLocation();
-            this.items = order.getItems();
-            this.cost = order.calculateCost();
-            this.status = order.getStatus();
+            this.studentId = appeal.getStudentID();
+            this.comments = appeal.getComments();
+            this.title = appeal.getTitle();
+            this.appealStatus = appeal.getStatus();
             this.links = java.util.Arrays.asList(links);
         } catch (Exception ex) {
-            throw new InvalidOrderException(ex);
+            throw new InvalidAppealException(ex);
         }
-        
-        LOG.debug("Created the OrderRepresentation {}", this);
+
+        LOG.debug("Created the AppealRepresentation {}", this);
     }
 
     @Override
@@ -130,26 +132,28 @@ public class AppealRepresentation extends Representation1 {
         }
     }
 
-    public Order getOrder() {
-        LOG.info("Retrieving the Order Representation");
-        LOG.debug("Location = {}", location);
-        LOG.debug("Location = {}", items);
-        if (location == null || items == null) {
-            throw new InvalidOrderException();
+
+    public Appeal getAppeal() {
+        LOG.info("Retrieving the Appeal Representation");
+//        LOG.debug("Location = {}", location);
+//        LOG.debug("Location = {}", items);
+        if (title.isEmpty() || gradeId == 0 || studentId ==0 ) {
+            throw new InvalidAppealException();
         }
-        for (Item i : items) {
+/*        for (Item i : items) {
             if (i == null) {
                 throw new InvalidOrderException();
             }
         }
-        
-        Order order = new Order(location, status, items);
-        
-        LOG.debug("Retrieving the Order Representation {}", order);
+*/
+        Appeal appeal = new Appeal(studentId, gradeId, title);
 
-        return order;
+        LOG.debug("Retrieving the Appeal Representation {}", appeal);
+
+        return appeal;
     }
 
+    /*
     public Link getCancelLink() {
         LOG.info("Retrieving the Cancel link ");
         return getLinkByName(RELATIONS_URI + "cancel");
@@ -169,7 +173,7 @@ public class AppealRepresentation extends Representation1 {
         LOG.info("Retrieving the Self link ");
         return getLinkByName("self");
     }
-    
+
     public OrderStatus getStatus() {
         LOG.info("Retrieving the order status {}", status);
         return status;
@@ -179,5 +183,5 @@ public class AppealRepresentation extends Representation1 {
         LOG.info("Retrieving the order cost {}", cost);
         return cost;
     }
-*/
+    */
 }
