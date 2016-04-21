@@ -14,10 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.restbucks.ordering.activities.InvalidAppealException;
-import com.restbucks.ordering.activities.InvalidOrderException;
 import com.restbucks.ordering.model.Appeal;
 import com.restbucks.ordering.model.AppealStatus;
-import com.restbucks.ordering.model.Location;
 
 @XmlRootElement(name = "appeal", namespace = Representation1.APPEALS_NAMESPACE)
 public class AppealRepresentation extends Representation1 {
@@ -55,13 +53,12 @@ public class AppealRepresentation extends Representation1 {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             appealRepresentation = (AppealRepresentation) unmarshaller.unmarshal(new ByteArrayInputStream(xmlRepresentation.getBytes()));
         } catch (Exception e) {
-            throw new InvalidOrderException(e);
+            throw new InvalidAppealException(e);
         }
 
         LOG.debug("Generated the object {}", appealRepresentation);
         return appealRepresentation;
     }
-
 
     public static AppealRepresentation createResponseAppealRepresentation(Appeal appeal, AppealsUri appealUri) {
         LOG.info("Creating a Response Appeal for appeal = {} and Appeal URI", appeal.toString(), appealUri.toString());
@@ -73,29 +70,41 @@ public class AppealRepresentation extends Representation1 {
         LOG.debug("Grade URI = {}", gradeUri);
 
         if(appeal.getStatus() == AppealStatus.CREATED) {
-            LOG.debug("The order status is {}", AppealStatus.CREATED);
+            LOG.debug("The appeal status is {}", AppealStatus.CREATED);
             appealRepresentation = new AppealRepresentation(appeal, 
-                    new Link1(RELATIONS_URI + "reject", appealUri), 
-                    new Link1(RELATIONS_URI + "grade", gradeUri), 
-                    new Link1(RELATIONS_URI + "process", appealUri),
-                    new Link1(RELATIONS_URI + "approve", appealUri),
                     new Link1(RELATIONS_URI + "submit", appealUri),
                     new Link1(Representation1.SELF_REL_VALUE, appealUri));
-        } else if(order.getStatus() == OrderStatus.PREPARING) {
-            LOG.debug("The order status is {}", OrderStatus.PREPARING);
-            orderRepresentation = new AppealRepresentation(order, new Link(Representation.SELF_REL_VALUE, orderUri));
-        } else if(order.getStatus() == OrderStatus.READY) {
-            LOG.debug("The order status is {}", OrderStatus.READY);
-            orderRepresentation = new AppealRepresentation(order, new Link(Representation.RELATIONS_URI + "reciept", UriExchange.receiptForPayment(paymentUri)));
-        } else if(order.getStatus() == OrderStatus.TAKEN) {
-            LOG.debug("The order status is {}", OrderStatus.TAKEN);
-            orderRepresentation = new AppealRepresentation(order);            
+        } else if(appeal.getStatus() == AppealStatus.SUBMITTED) {
+            LOG.debug("The appeal status is {}", AppealStatus.SUBMITTED);
+            appealRepresentation = new AppealRepresentation(appeal, 
+                    new Link1(RELATIONS_URI + "delete", appealUri),
+                    new Link1(RELATIONS_URI + "process", appealUri),
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri));
+        } else if(appeal.getStatus() == AppealStatus.INPROCESS) {
+            LOG.debug("The appeal status is {}", AppealStatus.INPROCESS);
+            appealRepresentation = new AppealRepresentation(appeal, 
+                    new Link1(RELATIONS_URI + "grade", gradeUri),
+                    new Link1(RELATIONS_URI + "reject", appealUri), 
+                    new Link1(RELATIONS_URI + "approve", appealUri),
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri));
+        } else if(appeal.getStatus() == AppealStatus.APPROVED) {
+            LOG.debug("The appeal status is {}", AppealStatus.APPROVED);
+            appealRepresentation = new AppealRepresentation(appeal,
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri));
+        } else if(appeal.getStatus() == AppealStatus.REJECTED) {
+            LOG.debug("The appeal status is {}", AppealStatus.REJECTED);
+            appealRepresentation = new AppealRepresentation(appeal,
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri)); 
+        } else if(appeal.getStatus() == AppealStatus.DELETED) {
+            LOG.debug("The appeal status is {}", AppealStatus.DELETED);
+            appealRepresentation = new AppealRepresentation(appeal,
+                    new Link1(Representation1.SELF_REL_VALUE, appealUri));            
         } else {
-            LOG.debug("The order status is in an unknown status");
+            LOG.debug("The appeal status is in an unknown status");
             throw new RuntimeException("Unknown Order Status");
         }
 
-        LOG.debug("The order representation created for the Create Response Order Representation is {}", orderRepresentation);
+        LOG.debug("The appeal representation created for the Create Response Appeal Representation is {}", appealRepresentation);
 
         return appealRepresentation;
     }
@@ -118,7 +127,7 @@ public class AppealRepresentation extends Representation1 {
 
     @Override
     public String toString() {
-        LOG.info("Converting Order Representation object to string");
+        LOG.info("Converting Appeal Representation object to string");
         try {
             JAXBContext context = JAXBContext.newInstance(AppealRepresentation.class);
             Marshaller marshaller = context.createMarshaller();
@@ -132,20 +141,12 @@ public class AppealRepresentation extends Representation1 {
         }
     }
 
-
     public Appeal getAppeal() {
         LOG.info("Retrieving the Appeal Representation");
-//        LOG.debug("Location = {}", location);
-//        LOG.debug("Location = {}", items);
         if (title.isEmpty() || gradeId == 0 || studentId ==0 ) {
             throw new InvalidAppealException();
         }
-/*        for (Item i : items) {
-            if (i == null) {
-                throw new InvalidOrderException();
-            }
-        }
-*/
+
         Appeal appeal = new Appeal(studentId, gradeId, title);
 
         LOG.debug("Retrieving the Appeal Representation {}", appeal);
@@ -153,35 +154,53 @@ public class AppealRepresentation extends Representation1 {
         return appeal;
     }
 
-    /*
-    public Link getCancelLink() {
-        LOG.info("Retrieving the Cancel link ");
-        return getLinkByName(RELATIONS_URI + "cancel");
+    public Link1 getSubmitLink() {
+        LOG.info("Retrieving the Submit link of appeal");
+        return getLinkByName(RELATIONS_URI + "submit");
     }
 
-    public Link getPaymentLink() {
-        LOG.info("Retrieving the Payment link ");
-        return getLinkByName(RELATIONS_URI + "payment");
+    public Link1 getGradeLink() {
+        LOG.info("Retrieving the Grade link ");
+        return getLinkByName(RELATIONS_URI + "grade");
     }
 
-    public Link getUpdateLink() {
-        LOG.info("Retrieving the Update link ");
+    public Link1 getUpdateLink() {
+        LOG.info("Retrieving the Update Appeal link ");
         return getLinkByName(RELATIONS_URI + "update");
     }
 
-    public Link getSelfLink() {
-        LOG.info("Retrieving the Self link ");
+    public Link1 getApproveLink() {
+        LOG.info("Retrieving the Approve link ");
+        return getLinkByName(RELATIONS_URI + "approve");
+    }
+
+    public Link1 getRejectLink() {
+        LOG.info("Retrieving the Reject Appeal link ");
+        return getLinkByName(RELATIONS_URI + "reject");
+    }
+
+    public Link1 getDeleteLink() {
+        LOG.info("Retrieving the Delete Appeal link ");
+        return getLinkByName(RELATIONS_URI + "delete");
+    }
+
+    public Link1 getProcessLink() {
+        LOG.info("Retrieving the IN-Process for appeal link ");
+        return getLinkByName(RELATIONS_URI + "process");
+    }
+
+    public Link1 getSelfLink() {
+        LOG.info("Retrieving the Self link of appeal");
         return getLinkByName("self");
     }
 
-    public OrderStatus getStatus() {
-        LOG.info("Retrieving the order status {}", status);
-        return status;
+    public AppealStatus getStatus() {
+        LOG.info("Retrieving the appeal status {}", appealStatus);
+        return appealStatus;
     }
 
-    public double getCost() {
-        LOG.info("Retrieving the order cost {}", cost);
-        return cost;
+    public String getTitle() {
+        LOG.info("Retrieving the appeal title {}", title);
+        return title;
     }
-    */
 }

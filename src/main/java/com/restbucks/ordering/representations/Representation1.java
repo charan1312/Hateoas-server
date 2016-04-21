@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class Representation1 {
+public abstract class Representation1 {
     public static final String RELATIONS_URI = "http://relations.appeals.com/";
     public static final String APPEALS_NAMESPACE = "http://schemas.appeals.com";
     public static final String DAP_NAMESPACE = APPEALS_NAMESPACE + "/dap";

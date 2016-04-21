@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import com.restbucks.ordering.model.Appeal;
 import com.restbucks.ordering.model.Identifier;
-import com.restbucks.ordering.model.Order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class AppealRepository {
     public Appeal get(Identifier identifier) {
         LOG.debug("Retrieving Appeal object for identifier {}", identifier);
         return backingStore.get(identifier.toString());
-     }
+    }
     
     public Appeal take(Identifier identifier) {
         LOG.debug("Removing the Appeal object for identifier {}", identifier);
@@ -67,12 +66,12 @@ public class AppealRepository {
     }
     
     public boolean appealSubmitted(Identifier identifier) {
-        LOG.debug("Checking to see if the Appeal with id = {} has been place", identifier);
+        LOG.debug("Checking to see if the Appeal with id = {} has been placed", identifier);
         return AppealRepository.current().has(identifier);
     }
     
     public boolean appealNotSubmitted(Identifier identifier) {
-        LOG.debug("Checking to see if the Appeal with id = {} has not been place", identifier);
+        LOG.debug("Checking to see if the Appeal with id = {} has not been placed", identifier);
         return !appealSubmitted(identifier);
     }
     
