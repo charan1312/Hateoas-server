@@ -1,9 +1,9 @@
 package com.restbucks.ordering.model;
 
 public class Grade {         // GRADE WILL HAVE GRADEITEM TYPE, GRADEITEM ID , GRADE AND FEEDBACK
-    private final int gradeID;
+    private int gradeID;
     private GradeItem gradeItem;
-    private final int gradeItemId;
+    private int gradeItemId;
     private double grade;
     private String feedback;
 
@@ -53,5 +53,4 @@ public class Grade {         // GRADE WILL HAVE GRADEITEM TYPE, GRADEITEM ID , G
     public int getGradeItemId() {
         return gradeItemId;
     }
-    
 }
