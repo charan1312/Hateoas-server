@@ -32,6 +32,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.restbucks.ordering.resources.OrderResource.class);
         resources.add(com.restbucks.ordering.resources.PaymentResource.class);
         resources.add(com.restbucks.ordering.resources.ReceiptResource.class);
+        resources.add(com.restbucks.ordering.resources.GradeResource.class);
+        resources.add(com.restbucks.ordering.resources.AppealResource.class);
     }
-    
 }

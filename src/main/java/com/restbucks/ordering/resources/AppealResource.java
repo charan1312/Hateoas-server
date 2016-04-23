@@ -87,15 +87,19 @@ public class AppealResource {
         LOG.info("Creating an Appeal Resource");
         
         Response response;
-        
+        AppealRepresentation responseRepresentation;
         try {
-            AppealRepresentation responseRepresentation = new CreateAppealActivity().create(AppealRepresentation.fromXmlString(appealRepresentation).getAppeal(), new AppealsUri(uriInfo.getRequestUri()));
-            response = Response.created(responseRepresentation.getUpdateLink().getUri()).entity(responseRepresentation).build();
+            responseRepresentation = new CreateAppealActivity().create(AppealRepresentation.fromXmlString(appealRepresentation).getAppeal(), new AppealsUri(uriInfo.getRequestUri()));
+            response = Response
+                    .created(responseRepresentation.getUpdateLink().getUri())
+                    .entity(responseRepresentation)
+                    .build();
         } catch (InvalidAppealException iae) {
             LOG.debug("Invalid Appeal - Problem with the appealrepresentation {}", appealRepresentation);
             response = Response.status(Status.BAD_REQUEST).build();
         } catch (Exception ex) {
             LOG.debug("Someting went wrong creating the appeal resource");
+            LOG.info(ex.getMessage());
             response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
         
@@ -106,7 +110,7 @@ public class AppealResource {
 
     @DELETE
     @Path("/{appealId}")
-    @Produces("application/vnd.restbucks+xml")
+    @Produces("application/vnd-cse564-appeals+xml")
     public Response removeAppeal() {
         LOG.info("Removing an Order Reource");
         
@@ -133,8 +137,8 @@ public class AppealResource {
 
     @POST
     @Path("/{appealId}")
-    @Consumes("application/vnd.restbucks+xml")
-    @Produces("application/vnd.restbucks+xml")
+    @Consumes("application/vnd-cse564-appeals+xml")
+    @Produces("application/vnd-cse564-appeals+xml")
     public Response updateAppeal(String orderRepresentation) {
         LOG.info("Updating an Appeal Resource");
         

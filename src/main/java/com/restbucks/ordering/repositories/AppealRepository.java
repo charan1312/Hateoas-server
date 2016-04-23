@@ -3,12 +3,15 @@ package com.restbucks.ordering.repositories;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.inject.Singleton;
+
 import com.restbucks.ordering.model.Appeal;
 import com.restbucks.ordering.model.Identifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AppealRepository {
     
     private static final Logger LOG = LoggerFactory.getLogger(AppealRepository.class);

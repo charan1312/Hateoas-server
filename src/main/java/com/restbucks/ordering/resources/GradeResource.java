@@ -78,8 +78,8 @@ public class GradeResource {
     
     
     @PUT
-    @Consumes("application/vnd.restbucks+xml")
-    @Produces("application/vnd.restbucks+xml")
+    @Consumes("application/vnd-cse564-appeals+xml")
+    @Produces("application/vnd-cse564-appeals+xml")
     public Response updateGrade(GradeRepresentation gradeRepresentation) {
         LOG.info("Updating the grade");
         
