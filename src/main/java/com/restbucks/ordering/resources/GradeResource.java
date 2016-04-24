@@ -80,15 +80,15 @@ public class GradeResource {
     @PUT
     @Consumes("application/vnd-cse564-appeals+xml")
     @Produces("application/vnd-cse564-appeals+xml")
-    public Response updateGrade(GradeRepresentation gradeRepresentation) {
+    public Response updateGrade(String gradeRepresentation) {
         LOG.info("Updating the grade");
         
         Response response;
         
         try {
-            response = Response.ok(uriInfo.getRequestUri()).entity(
-                    new GradeActivity().updategrade(gradeRepresentation.getGrade(), 
-                            new AppealsUri(uriInfo.getRequestUri()))).build();
+            response = Response.ok(uriInfo.getRequestUri())    //AppealRepresentation.fromXmlString(appealRepresentation).getAppeal()
+                       .entity(new GradeActivity().updategrade(GradeRepresentation.fromXmlString(gradeRepresentation).getGrade(), new AppealsUri(uriInfo.getRequestUri())))
+                       .build();
         } catch(NoSuchGradeException nsae) {
             LOG.debug("No grade {}", gradeRepresentation);
             response = Response.status(Status.NOT_FOUND).build();

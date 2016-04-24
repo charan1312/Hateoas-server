@@ -139,16 +139,16 @@ public class AppealResource {
     @Path("/{appealId}")
     @Consumes("application/vnd-cse564-appeals+xml")
     @Produces("application/vnd-cse564-appeals+xml")
-    public Response updateAppeal(String orderRepresentation) {
+    public Response updateAppeal(String appealRepresentation) {
         LOG.info("Updating an Appeal Resource");
         
         Response response;
         
         try {
-            AppealRepresentation responseRepresentation = new UpdateAppealActivity().update(AppealRepresentation.fromXmlString(orderRepresentation).getAppeal(), new AppealsUri(uriInfo.getRequestUri()));
+            AppealRepresentation responseRepresentation = new UpdateAppealActivity().update(AppealRepresentation.fromXmlString(appealRepresentation).getAppeal(), new AppealsUri(uriInfo.getRequestUri()));
             response = Response.status(Status.OK).entity(responseRepresentation).build();
         } catch (InvalidAppealException ioe) {
-            LOG.debug("Invalid appeal in the XML representation {}", orderRepresentation);
+            LOG.debug("Invalid appeal in the XML representation {}", appealRepresentation);
             response = Response.status(Status.BAD_REQUEST).build();
         } catch (NoSuchAppealException nsoe) {
             LOG.debug("No such appeal resource to update");
