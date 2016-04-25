@@ -11,14 +11,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import com.restbucks.ordering.activities.RemoveOrderActivity;
-import com.restbucks.ordering.activities.CreateOrderActivity;
-import com.restbucks.ordering.activities.InvalidOrderException;
-import com.restbucks.ordering.activities.NoSuchOrderException;
-import com.restbucks.ordering.activities.OrderDeletionException;
-import com.restbucks.ordering.activities.ReadOrderActivity;
-import com.restbucks.ordering.activities.UpdateException;
-import com.restbucks.ordering.activities.UpdateOrderActivity;
+import com.hateoas.appeals.activities.CreateOrderActivity;
+import com.hateoas.appeals.activities.InvalidOrderException;
+import com.hateoas.appeals.activities.NoSuchOrderException;
+import com.hateoas.appeals.activities.OrderDeletionException;
+import com.hateoas.appeals.activities.ReadOrderActivity;
+import com.hateoas.appeals.activities.RemoveOrderActivity;
+import com.hateoas.appeals.activities.UpdateException;
+import com.hateoas.appeals.activities.UpdateOrderActivity;
 import com.restbucks.ordering.representations.OrderRepresentation;
 import com.restbucks.ordering.representations.RestbucksUri;
 

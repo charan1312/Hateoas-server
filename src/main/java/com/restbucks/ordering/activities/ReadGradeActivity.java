@@ -1,5 +1,6 @@
 package com.restbucks.ordering.activities;
 
+import com.hateoas.appeals.activities.NoSuchGradeException;
 import com.restbucks.ordering.model.Grade;
 import com.restbucks.ordering.repositories.GradeRepository;
 import com.restbucks.ordering.representations.AppealsUri;

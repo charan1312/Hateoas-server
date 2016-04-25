@@ -10,11 +10,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import com.restbucks.ordering.activities.CompleteOrderActivity;
-import com.restbucks.ordering.activities.NoSuchOrderException;
-import com.restbucks.ordering.activities.OrderAlreadyCompletedException;
-import com.restbucks.ordering.activities.OrderNotPaidException;
-import com.restbucks.ordering.activities.ReadReceiptActivity;
+import com.hateoas.appeals.activities.CompleteOrderActivity;
+import com.hateoas.appeals.activities.NoSuchOrderException;
+import com.hateoas.appeals.activities.OrderAlreadyCompletedException;
+import com.hateoas.appeals.activities.OrderNotPaidException;
+import com.hateoas.appeals.activities.ReadReceiptActivity;
 import com.restbucks.ordering.model.Identifier;
 import com.restbucks.ordering.representations.OrderRepresentation;
 import com.restbucks.ordering.representations.ReceiptRepresentation;

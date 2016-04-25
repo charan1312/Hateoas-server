@@ -1,5 +1,7 @@
 package com.restbucks.ordering.activities;
 
+import com.hateoas.appeals.activities.NoSuchAppealException;
+import com.hateoas.appeals.activities.UpdateException;
 import com.restbucks.ordering.model.Appeal;
 import com.restbucks.ordering.model.AppealStatus;
 import com.restbucks.ordering.model.Identifier;

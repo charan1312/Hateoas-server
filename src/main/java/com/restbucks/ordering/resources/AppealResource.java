@@ -11,21 +11,21 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import com.restbucks.ordering.activities.AppealDeletionException;
-import com.restbucks.ordering.activities.CreateAppealActivity;
-import com.restbucks.ordering.activities.InvalidAppealException;
-import com.restbucks.ordering.activities.NoSuchAppealException;
-import com.restbucks.ordering.activities.ReadAppealActivity;
-import com.restbucks.ordering.activities.RemoveAppealActivity;
-import com.restbucks.ordering.activities.RemoveOrderActivity;
-import com.restbucks.ordering.activities.CreateOrderActivity;
-import com.restbucks.ordering.activities.InvalidOrderException;
-import com.restbucks.ordering.activities.NoSuchOrderException;
-import com.restbucks.ordering.activities.OrderDeletionException;
-import com.restbucks.ordering.activities.ReadOrderActivity;
-import com.restbucks.ordering.activities.UpdateAppealActivity;
-import com.restbucks.ordering.activities.UpdateException;
-import com.restbucks.ordering.activities.UpdateOrderActivity;
+import com.hateoas.appeals.activities.AppealDeletionException;
+import com.hateoas.appeals.activities.CreateAppealActivity;
+import com.hateoas.appeals.activities.CreateOrderActivity;
+import com.hateoas.appeals.activities.InvalidAppealException;
+import com.hateoas.appeals.activities.InvalidOrderException;
+import com.hateoas.appeals.activities.NoSuchAppealException;
+import com.hateoas.appeals.activities.NoSuchOrderException;
+import com.hateoas.appeals.activities.OrderDeletionException;
+import com.hateoas.appeals.activities.ReadAppealActivity;
+import com.hateoas.appeals.activities.ReadOrderActivity;
+import com.hateoas.appeals.activities.RemoveAppealActivity;
+import com.hateoas.appeals.activities.RemoveOrderActivity;
+import com.hateoas.appeals.activities.UpdateAppealActivity;
+import com.hateoas.appeals.activities.UpdateException;
+import com.hateoas.appeals.activities.UpdateOrderActivity;
 import com.restbucks.ordering.representations.AppealRepresentation;
 import com.restbucks.ordering.representations.AppealsUri;
 import com.restbucks.ordering.representations.OrderRepresentation;
@@ -112,7 +112,7 @@ public class AppealResource {
     @Path("/{appealId}")
     @Produces("application/vnd-cse564-appeals+xml")
     public Response removeAppeal() {
-        LOG.info("Removing an Order Reource");
+        LOG.info("Removing an Appeal Reource");
         
         Response response;
         
@@ -130,7 +130,7 @@ public class AppealResource {
             response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
         
-        LOG.debug("Resulting response for deleting the order resource is {}", response);
+        LOG.debug("Resulting response for deleting the Appeal resource is {}", response);
         
         return response;
     }

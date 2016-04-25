@@ -9,10 +9,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import com.restbucks.ordering.activities.InvalidPaymentException;
-import com.restbucks.ordering.activities.NoSuchOrderException;
-import com.restbucks.ordering.activities.PaymentActivity;
-import com.restbucks.ordering.activities.UpdateException;
+import com.hateoas.appeals.activities.InvalidPaymentException;
+import com.hateoas.appeals.activities.NoSuchOrderException;
+import com.hateoas.appeals.activities.PaymentActivity;
+import com.hateoas.appeals.activities.UpdateException;
 import com.restbucks.ordering.model.Identifier;
 import com.restbucks.ordering.representations.Link;
 import com.restbucks.ordering.representations.PaymentRepresentation;

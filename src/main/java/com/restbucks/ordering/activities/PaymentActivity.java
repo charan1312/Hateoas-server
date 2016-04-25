@@ -1,5 +1,9 @@
 package com.restbucks.ordering.activities;
 
+import com.hateoas.appeals.activities.InvalidPaymentException;
+import com.hateoas.appeals.activities.NoSuchOrderException;
+import com.hateoas.appeals.activities.UpdateException;
+import com.hateoas.appeals.activities.UriExchange;
 import com.restbucks.ordering.model.Identifier;
 import com.restbucks.ordering.model.OrderStatus;
 import com.restbucks.ordering.model.Payment;
